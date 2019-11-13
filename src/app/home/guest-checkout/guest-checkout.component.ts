@@ -34,18 +34,18 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
   tax: number = 0.00;
   ship_amt: number = 0.00;
   totalAmount: number = 0.00;
-  // // production code working
-  // apiLoginID = '9Nd3y7r76VF';//9Nd3y7r76VF
-  // clientKey = '7h3Xvgn97K3Vkf9u6gkGzcj8k23thba7K4n9537JUMMC4fgs25LqBsNWWBNSFXje';
-  // transactionKey = '53j562rZTM3kYrLu';//53j562rZTM3kYrLu
-  // apiUrl = 'https://api.authorize.net/xml/v1/request.api';
-  // end
+  // production code working
+  apiLoginID = '9Nd3y7r76VF';//9Nd3y7r76VF
+  clientKey = '7h3Xvgn97K3Vkf9u6gkGzcj8k23thba7K4n9537JUMMC4fgs25LqBsNWWBNSFXje';
+  transactionKey = '53j562rZTM3kYrLu';//53j562rZTM3kYrLu
+  apiUrl = 'https://api.authorize.net/xml/v1/request.api';
+  end
 
-  //testing code working
-  apiLoginID  = '3a4zQV8XRuCT';//9Nd3y7r76VF
-  clientKey = '8G5hYgVT92u5uv8m2M7byC93V7BX44jFq2DumfHaDn9JdPyQn5h4pa4FBTD5Dhxq';
-  apiUrl = 'https://apitest.authorize.net/xml/v1/request.api';
-  transactionKey = '4HeCaRS4L4m625yw';
+  // //testing code working
+  // apiLoginID  = '3a4zQV8XRuCT';//9Nd3y7r76VF
+  // clientKey = '8G5hYgVT92u5uv8m2M7byC93V7BX44jFq2DumfHaDn9JdPyQn5h4pa4FBTD5Dhxq';
+  // apiUrl = 'https://apitest.authorize.net/xml/v1/request.api';
+  // transactionKey = '4HeCaRS4L4m625yw';
 
   addScript: boolean = false;
   paypalLoad: boolean = true;
