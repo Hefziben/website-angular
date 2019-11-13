@@ -35,17 +35,17 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
   ship_amt: number = 0.00;
   totalAmount: number = 0.00;
   // // production code working
-  apiLoginID = '9Nd3y7r76VF';//9Nd3y7r76VF
-  clientKey = '7h3Xvgn97K3Vkf9u6gkGzcj8k23thba7K4n9537JUMMC4fgs25LqBsNWWBNSFXje';
-  transactionKey = '53j562rZTM3kYrLu';//53j562rZTM3kYrLu
-  apiUrl = 'https://api.authorize.net/xml/v1/request.api';
+  // apiLoginID = '9Nd3y7r76VF';//9Nd3y7r76VF
+  // clientKey = '7h3Xvgn97K3Vkf9u6gkGzcj8k23thba7K4n9537JUMMC4fgs25LqBsNWWBNSFXje';
+  // transactionKey = '53j562rZTM3kYrLu';//53j562rZTM3kYrLu
+  // apiUrl = 'https://api.authorize.net/xml/v1/request.api';
   // end
 
   //testing code working
-  // apiLoginID  = '3a4zQV8XRuCT';//9Nd3y7r76VF
-  // clientKey = '8G5hYgVT92u5uv8m2M7byC93V7BX44jFq2DumfHaDn9JdPyQn5h4pa4FBTD5Dhxq';
-  // apiUrl = 'https://apitest.authorize.net/xml/v1/request.api';
-  // transactionKey = '4HeCaRS4L4m625yw';
+  apiLoginID  = '3a4zQV8XRuCT';//9Nd3y7r76VF
+  clientKey = '8G5hYgVT92u5uv8m2M7byC93V7BX44jFq2DumfHaDn9JdPyQn5h4pa4FBTD5Dhxq';
+  apiUrl = 'https://apitest.authorize.net/xml/v1/request.api';
+  transactionKey = '4HeCaRS4L4m625yw';
 
   addScript: boolean = false;
   paypalLoad: boolean = true;
@@ -116,7 +116,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
       this.verifying = true;
       //console.log(data);
       actions.payment.execute().then((payment) => {
-        // console.log('Payment Success', payment);
+        console.log(payment);
         localStorage.lastPayment = JSON.stringify(payment);
         localStorage.cartItems = JSON.stringify([]);
         this.paymentSuccess(payment);
@@ -161,6 +161,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
     this.getTotal();
     this.getUser();
     this.paypalArr();
+    this.getCartItems();
     
   }
 
@@ -541,13 +542,102 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
     this.verifying = true;
     this._http.post(this.apiUrl, postData).subscribe(
       (res) => {
-        //console.log('3 got response');        
-        console.log(res);
+        //console.log('3 got response'); 
+        let date = new Date();
+        let paymentId = res['transactionResponse'].transId  
         
         if (res['messages'] && res['messages']['resultCode'] === "Ok") {
           this.verifying = false;
-          this.getCartitemCount();
-          this.router.navigateByUrl('success');
+          
+       
+          // data
+          let orderData = {
+            payer: {
+              payment_method: 'Authorize.net',
+              payer_info: {
+                first_name: this.model.fname,
+                last_name: this.model.lname,
+                email: this.model.email,
+                country_code: this.model.countryCode,
+                billing_address: {
+                  line1: this.model.street_address,
+                  line2: this.model.address_line_1,
+                  city: this.model.city,
+                  country_code: this.model.countryCode,
+                  postal_code: this.model.zipcode.toString(),
+                  state: this.model.state,
+                  phone: this.model.phone
+                }
+              }
+            },
+            payment: {
+              transactions: [
+                {
+                  amount: {
+                    total: this.sum + this.ship_amt - this.coupon,
+                    currency: 'USD',
+                    details: {
+                      subtotal: this.sum,
+                      tax: this.tax,
+                      shipping: this.ship_amt,
+                      handling_fee: 0,
+                      coupon_discount: this.coupon,
+                      coupon_code: this.model.coupon,
+                      special_instruction: this.model.instructions
+                    }
+                  },
+                  cart: {
+                    create_time: date,
+                    id: paymentId,
+                    intent: 'Sales',
+                    currency: 'USD',
+                  },
+                  item_list: {
+                    items: this.Items,
+                    shipping_address: {
+                      recipient_name: this.same ? this.model.fname + ' ' + this.model.lname : this.shipping.fname + ' ' + this.shipping.lname,
+                      line1: this.same ? this.model.street_address : this.shipping.street_address,
+                      line2: this.same ? this.model.address_line_1 : this.shipping.address_line_2,
+                      city: this.same ? this.model.city : this.shipping.city,
+                      state: this.same ? this.model.state : this.shipping.state,
+                      country_code: this.model.countryCode,
+                      postal_code: this.same ? this.model.zipcode.toString() : this.shipping.zipcode.toString()
+                    }
+                  }
+                 }
+              ]
+            }
+          }
+          let data = {
+            cart: {
+              create_time: date,
+              id: paymentId,
+              intent: 'Sales',
+              currency: 'USD',
+            },
+            payer: orderData.payer,
+            items: this.Items
+          };
+          console.log(orderData);
+          localStorage.lastPayment = JSON.stringify(orderData.payment);
+        console.log(localStorage.lastPayment);
+     // send to server
+     this._productService.postOrderData(orderData)
+    .subscribe((res: any) => {
+      if (res.success == 1) {
+        console.log(res);
+        localStorage.lastPayment = JSON.stringify(orderData.payment);
+        console.log(localStorage.lastPayment);
+        localStorage.cartItems = JSON.stringify([]);
+        this.getCartitemCount();
+       localStorage.lastPaymentShipping = JSON.stringify(data);
+        this.verifying = false;
+        this.router.navigateByUrl('success');
+      } else {
+        // console.log('Payment Failed');
+      }
+    });
+          
         } else {
           alert('Payment Failed');
           
@@ -694,5 +784,11 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
 
   } // paymentSuccess
 
+getCartItems(){
+  
+ let cartDetails = JSON.parse(localStorage.cartItems);
+console.log(cartDetails);
 
+  
+}
 }
