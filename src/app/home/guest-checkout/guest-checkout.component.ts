@@ -317,6 +317,8 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
     let result = this.Items.map(a => a.TotalPrice);
     // console.log(result);
     this.sum = result.reduce((a, b) => { return a + b; }, 0);
+    console.log(this.sum);
+    
   }
 
   checkout() {
@@ -461,6 +463,11 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
 
           } else {
             let opaqueData = response.opaqueData;
+            let total = this.sum + this.ship_amt + this.tax - this.coupon;
+            total = Math.round(total * 100) / 100;
+            this.totalAmount = total;
+           
+            
             //console.log(response.messages);
             //console.log(response)
             let paymentData = {};
@@ -504,7 +511,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
       
             let transactionRequest = {
               transactionType: "authCaptureTransaction",
-              amount: +(this.sum + this.ship_amt - this.coupon + this.tax),
+              amount: this.totalAmount,
               payment: {
                 opaqueData: opaqueData
               },
@@ -535,7 +542,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
     this._http.post(this.apiUrl, postData).subscribe(
       (res) => {
         //console.log('3 got response');        
-        //console.log(res);
+        console.log(res);
         
         if (res['messages'] && res['messages']['resultCode'] === "Ok") {
           this.verifying = false;
@@ -686,7 +693,6 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
       });
 
   } // paymentSuccess
-
 
 
 }
