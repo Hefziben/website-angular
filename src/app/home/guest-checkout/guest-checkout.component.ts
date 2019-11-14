@@ -552,6 +552,13 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
        
           // data
           let orderData = {
+            cart: {
+              cart:'',
+              create_time: date,
+              id: paymentId,
+              intent: 'Sales',
+              currency: 'USD',
+            },
             payer: {
               payment_method: 'Authorize.net',
               payer_info: {
@@ -569,7 +576,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
                   phone: this.model.phone
                 }
               }
-            },
+            },           
             payment: {
               transactions: [
                 {
@@ -586,12 +593,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
                       special_instruction: this.model.instructions
                     }
                   },
-                  cart: {
-                    create_time: date,
-                    id: paymentId,
-                    intent: 'Sales',
-                    currency: 'USD',
-                  },
+                  
                   item_list: {
                     items: this.Items,
                     shipping_address: {

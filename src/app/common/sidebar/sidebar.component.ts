@@ -17,9 +17,11 @@ export class SidebarComponent implements OnInit {
   itemNum = '';
   User: any;
   loggedIn: boolean;
+  searchText;
   constructor(public _producService: productService, private router: Router) { }
 
   ngOnInit() {
+    //this.searchByName();
     this.getCategories();
     // this.getCartitemCount();
     this._producService.currentData.subscribe( data => {
@@ -98,10 +100,29 @@ export class SidebarComponent implements OnInit {
     document.getElementById('searchBlock').style.width = '0%';
   }
 
-  Search() {
+  Search() {    
     this.search = true;
     document.getElementById('searchBlock').style.width = '100%';
+
   }
+searchByName(){
+  console.log(this.searchText);
+  const sub = '1065';
+  
+  // const name = this.searchText;
+  // this._producService.getCategory().subscribe(res =>{
+  //   console.log(res);
+    
+  // })
+
+  this._producService.getSubCategory(sub).subscribe(res =>{
+    console.log(res);
+    
+  })
+  // this._producService.getProductByName(name).subscribe(data =>{
+  //   console.log(data);    
+  // })
+}
 
   getSubCat(item) {
     this.closeNav();

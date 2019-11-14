@@ -110,5 +110,7 @@ export class LoginComponent implements OnInit {
   authCheck2() {
     alert('Under Development!')
   }
-
+  signup(){
+    this.router.navigate(['signup']);
+  }
 }

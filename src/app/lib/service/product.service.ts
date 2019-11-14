@@ -65,6 +65,10 @@ export class productService {
     return this.http.get(this.$baseUrl + '/api/v1/auth/showCat/');
   }
 
+  getProductByName(name:any){
+    //return this.http.get(this.$baseUrl + '/api/v1/auth/productSearch?ItemName=Albania');
+    return this.http.get(this.$baseUrl + `/api/v1/auth/productSearch?ItemName=${name}`);
+  }
   getSubCategory(id) {
     return this.http.get(this.$baseUrl + '/api/v1/auth/showCat/' + id);
   }

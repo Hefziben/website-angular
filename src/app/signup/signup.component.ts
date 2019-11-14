@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -16,13 +16,38 @@ export class SignupComponent implements OnInit {
   loading: boolean;
   message = '';
   Countries: any;
+  signupForm: FormGroup;
+  submitted = false;
 
-  constructor() { }
+  constructor(private fb:FormBuilder) { 
+
+      this.signupForm = fb.group({
+        fname:["", Validators.required],
+        lname: ["",Validators.required],
+        add1: ["", Validators.required],
+        add2: [""],
+        company: [""],
+        city: ["", Validators.required],
+        country: ["", Validators.required],
+        state: ["", Validators.required],
+        zipcode: ["", Validators.required],
+        tel: ["", Validators.required],
+        fax: [""],
+        email: ["", Validators.required],
+        pass: ["", Validators.required],
+        cpass: ["", Validators.required],
+        });
+
+  }
 
   ngOnInit() {
     this.getCountry();
+   
   }
+  
+  get f() { return this.signupForm.controls; }
 
+  
   getCountry() {
     fetch('https://www.m.licenseplates.tv/public/api/v1/auth/country')
     .then( (res: any) => {
@@ -35,8 +60,12 @@ export class SignupComponent implements OnInit {
     });
   }
 
-  getState(val) {
-    fetch('https://www.m.licenseplates.tv/public/api/v1/auth/state/' + val)
+  
+
+  getState(event) {
+    console.log(event);
+    
+    fetch('https://www.m.licenseplates.tv/public/api/v1/auth/state/' + event)
     .then( (res: any) => {
       return res.json();
     })
@@ -58,21 +87,39 @@ export class SignupComponent implements OnInit {
 
   checkCountry(e) {
     console.log(e.target.value)
-    if (e.target.value == '38' || e.target.value == '38') {
-      this.state = true;
-      return this.getState(e.target.value);
-    } else {
-      this.state = false;
-    }
+    // if (e.target.value == '38' || e.target.value == '38') {
+    //   this.state = true;
+    //   this.signupForm.value.country = e.target.value;
+    //   return this.getState(e.target.value);
+      
+    // } else {
+    //   this.state = false;
+    // }
   }
 
-  checkState(val) {
-    this.user.state = val.target.value;
-    console.log(this.user.state)
+  checkState(ngModel) {
+    // this.user.state = val.target.value;
+    // this.signupForm.value.state = this.user.state
+    console.log(ngModel.value)
   }
 
   authCheck() {
-    alert('Under Development!')
+    console.log('form');
+   
+    
+    
+  }
+
+  onSubmit(){
+    this.submitted = true;
+    console.log(this.signupForm.value);
+       // stop here if form is invalid
+       if (this.signupForm.invalid) {
+        return;
+    }
+
+    alert('SUCCESS!! :-)'
+    
   }
 
 }

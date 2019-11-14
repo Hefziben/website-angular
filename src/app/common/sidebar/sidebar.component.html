@@ -16,24 +16,21 @@
                         </div>
                 
                         <div style="padding: 1em" class="col-xs-8 col-sm-9 text-right">
-                               <span class="right_btn" style="font-size:27px;cursor:pointer" (click)="Search()"><i class="fa fa-search" aria-hidden="true"></i></span> &nbsp;
+                               <span class="right_btn" style="font-size:20px;cursor:pointer" (click)="Search()"><i class="fa fa-search" aria-hidden="true"></i></span> &nbsp;
                                <span class="right_btn" style="font-size:27px;cursor:pointer" routerLink="/cart"><i class="fa fa-shopping-cart" aria-hidden="true"></i><sup class="text-danger">{{itemNum}}</sup></span>
                         </div>
                 </ng-container>
 
-                <ng-container *ngIf="search">
-                    <div class="col-xs-10 col-sm-10">
-                        
-                            <div class="form-group">
-                                    <!-- <label for="exampleFormControlInput1">Email address</label> -->
-                                    <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="Search For...">
-                                  </div>
-
-                    </div>
-                    <div class="col-xs-2 col-sm-2 ">
-                            <a href="javascript:void(0)" style="font-size:30px;cursor:pointer;color: #999999;" class="closebtn" (click)="closeSearch()">&times;</a>
-                    </div>
-                </ng-container>
+                <ng-container style="display: flex; border: solid red; justify-content: flex-end; margin-top: 10px;" *ngIf="search">
+                  <div class="col-xs-7 col-sm-7">
+                    <input type="text" class="form-control" id="exampleFormControlInput1" [(ngModel)]="searchText" placeholder="Search For...">
+                  </div>
+                <div style="display: flex; flex-flow: row wrap; justify-content: space-evenly;">
+                  <button style="font-size:20px;color: white;background-color: black;" (click)="searchByName()">Search</button>
+                  <span style="font-size:30px;"  class="closebtn" (click)="closeSearch()">&times;</span>
+              
+                </div>
+                    </ng-container>
         
                 
 
