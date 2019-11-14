@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { AuthService } from "../lib/service/auth/auth.service";
+import { Alert } from 'selenium-webdriver';
+import { throwMatDuplicatedDrawerError } from '@angular/material';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -22,7 +25,7 @@ export class SignupComponent implements OnInit {
   errors = false;
   passMatch = true;
 
-  constructor(private fb:FormBuilder, private auth:AuthService) { 
+  constructor(private fb:FormBuilder, private auth:AuthService, private router: Router) { 
 
       this.signupForm = fb.group({
         fname:["", Validators.required],
@@ -129,14 +132,14 @@ export class SignupComponent implements OnInit {
         lname:this.signupForm.value.lname,
         address:this.signupForm.value.address,
         address2:this.signupForm.value.address2,
-        company:this.signupForm.value.conpany,
+        company:this.signupForm.value.company,
         city:this.signupForm.value.city,
         country:this.signupForm.value.country,
         state:this.signupForm.value.state,
         zipcode:this.signupForm.value.zipcode,
         telephone:this.signupForm.value.telephone,
         email:this.signupForm.value.email,
-        pass:this.signupForm.value.pss,
+        pass:this.signupForm.value.pass,
 
       };
 
@@ -145,9 +148,23 @@ export class SignupComponent implements OnInit {
       this.passMatch = true;
       this.auth.signUp(params).subscribe(res=>{
         console.log(res);
+        const response = res['success'];
+        const message = res['message']
+        if (response == 0) {          
+          alert(message);   
+        } else {
+          console.log('SUCCESS!! :-)');
+          this.signupForm.reset();
+          alert(message);  
+          this.router.navigate(['/login']);
+          
+        }
+        
+       
+        
         
       })
-      console.log('SUCCESS!! :-)');
+      
     }
   
    

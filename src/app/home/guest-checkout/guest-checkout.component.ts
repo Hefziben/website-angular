@@ -84,7 +84,6 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
           transactions: [
             {
               amount: {
-                // total: this.sum + this.ship_amt - this.coupon,
                 total: this.totalAmount,
                 currency: 'USD',
                 details: {
@@ -581,7 +580,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
               transactions: [
                 {
                   amount: {
-                    total: this.sum + this.ship_amt - this.coupon,
+                    total: this.totalAmount,
                     currency: 'USD',
                     details: {
                       subtotal: this.sum,
@@ -738,7 +737,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
         transactions: [
           {
             amount: {
-              total: this.sum + this.ship_amt - this.coupon,
+              total: this.totalAmount,
               currency: 'USD',
               details: {
                 subtotal: this.sum,

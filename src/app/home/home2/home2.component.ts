@@ -46,9 +46,11 @@ export class Home2Component implements OnInit {
         this.getSubCat(this.id);
     }
     getSubCat(id) {
-        const searchMatch = new RegExp( "[A-Za-z]").test(id);
-        console.log(searchMatch);
-        if (!searchMatch) {
+        const alphaMatch = new RegExp( "[A-Za-z]").test(id);
+        const alphanumerSearch = new RegExp( "[A-Za-z0-9]").test(id);
+        const numericSearch = new RegExp( "[0-9]").test(id);
+        console.log(alphaMatch);
+        if (numericSearch) {
           console.log("no letters, regular serach");
           this._productService
             .getStaticSubCategory(id, this.currentPage)
@@ -58,7 +60,7 @@ export class Home2Component implements OnInit {
               console.log("subCategories---- ", this.subCategories);
               this.pagination(res.total_record);
             });
-        } else {
+        } if(alphaMatch) {
           console.log("letters, search match");
           this._productService.getProductByName(id).subscribe(data => {
             this.subCategories = data["product"];
@@ -67,6 +69,9 @@ export class Home2Component implements OnInit {
             console.log(records);
             this.pagination(records);
           });
+        } if(alphanumerSearch){
+            console.log(id);            
+
         }
         
            

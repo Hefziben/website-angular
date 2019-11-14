@@ -14,7 +14,10 @@ export class AuthService {
   login(params) {
     return this.http.get(this.$baseUrl + '/customerlogin?email=' + params.email + '&pass=' + params.password + '');
   }
-  signUp(params) {
-    return this.http.get(this.$baseUrl + '/createaccount/' + params);
+  signUp(params:any) {
+    return this.http.post(`${this.$baseUrl}/createaccount`, params);
+  }
+  forgotPassword(email:any){
+   return this.http.post(`${this.$baseUrl}/forgotpassword?email=`, email);
   }
 }

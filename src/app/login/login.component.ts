@@ -17,13 +17,17 @@ export class LoginComponent implements OnInit {
   message: any;
   fpass: boolean;
   success: boolean;
+  error: boolean;
+  resMessage;
+  show: boolean = true;
   Countries: any;
   state: boolean;
   States: any;
   constructor(public _authService: AuthService, public router: Router, public _productService: productService) { }
 
   ngOnInit() {
-    this.getCountry();
+  
+    
   }
 
   authCheck() {
@@ -59,53 +63,41 @@ export class LoginComponent implements OnInit {
     this.fpass = true;
   }
 
-  getCountry() {
-    fetch('https://www.m.licenseplates.tv/public/api/v1/auth/country')
-    .then( (res: any) => {
-      return res.json();
-    })
-    .then((myJson) => {
-      console.log(JSON.stringify(myJson));
-      this.Countries = myJson.countries;
-      console.log(this.Countries);
-    });
-  }
-
-  getState(val) {
-    fetch('https://www.m.licenseplates.tv/public/api/v1/auth/state/' + val)
-    .then( (res: any) => {
-      return res.json();
-    })
-    .then((myJson) => {
-      console.log(JSON.stringify(myJson));
-      this.States = myJson.states;
-      console.log(this.States);
-    });
-  }
-
   back() {
-    this.model = {};
-    this.fpass = !this.fpass;
+    this.fpass = false;
+    this.error = false;  
+    this.show = false; 
+    this.model = {} 
+    this.resMessage = null;
+    this.success = false;
+      
+   
   }
 
+  restart(){
+    console.log('here');
+    
+  }
   resetPass() {
-    this.success = true;
+    console.log(this.model);    
+    this._authService.forgotPassword(this.model).subscribe(res =>{
+      this.resMessage = res['message'];
+      console.log(res);
+      if(this.resMessage == "There is no account with this email address"){
+        console.log(this.resMessage); 
+        this.error = true; 
+        //alert(resMessage);      
+        return
+      } else {
+        this.model = {}
+        this.success = true;
+        this.error = false;
+        this.resMessage = null;
+      }
+      
+    })
   }
 
-  checkCountry(e) {
-    console.log(e.target.value)
-    if (e.target.value == '38' || e.target.value == '38') {
-      this.state = true;
-      return this.getState(e.target.value);
-    } else {
-      this.state = false;
-    }
-  }
-
-  checkState(val) {
-    this.model.state = val.target.value;
-    console.log(this.model.state)
-  }
 
   authCheck2() {
     alert('Under Development!')
