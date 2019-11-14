@@ -118,7 +118,7 @@ export class SignupComponent implements OnInit {
         return;
     }
 
-    alert('SUCCESS!! :-)'
+    alert('SUCCESS!! :-)')
     
   }
 
