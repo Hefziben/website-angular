@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { AuthService } from "../lib/service/auth/auth.service";
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.component.html',
@@ -18,24 +19,25 @@ export class SignupComponent implements OnInit {
   Countries: any;
   signupForm: FormGroup;
   submitted = false;
+  errors = false;
+  passMatch = true;
 
-  constructor(private fb:FormBuilder) { 
+  constructor(private fb:FormBuilder, private auth:AuthService) { 
 
       this.signupForm = fb.group({
         fname:["", Validators.required],
-        lname: ["",Validators.required],
-        add1: ["", Validators.required],
-        add2: [""],
-        company: [""],
-        city: ["", Validators.required],
-        country: ["", Validators.required],
-        state: ["", Validators.required],
-        zipcode: ["", Validators.required],
-        tel: ["", Validators.required],
-        fax: [""],
-        email: ["", Validators.required],
-        pass: ["", Validators.required],
-        cpass: ["", Validators.required],
+        lname:["",Validators.required],
+        address:["", Validators.required],
+        address2:[""],
+        company:[""],
+        city:["", Validators.required],
+        country:["", Validators.required],
+        state:["", Validators.required],
+        zipcode:["", Validators.required],
+        telephone:["", Validators.required],
+        email:["", Validators.required],
+        pass:["", Validators.required],
+        cpass:["", Validators.required],
         });
 
   }
@@ -111,14 +113,44 @@ export class SignupComponent implements OnInit {
   }
 
   onSubmit(){
-    this.submitted = true;
-    console.log(this.signupForm.value);
+      this.submitted = true;
+    
        // stop here if form is invalid
        if (this.signupForm.invalid) {
+         this.errors = true;
         return;
-    }
+    } if (this.signupForm.value.pass !== this.signupForm.value.cpass){
+      this.errors = true;
+      this.passMatch = false;      
+    } else{
+      const params = {
+      
+        fname:this.signupForm.value.fname,
+        lname:this.signupForm.value.lname,
+        address:this.signupForm.value.address,
+        address2:this.signupForm.value.address2,
+        company:this.signupForm.value.conpany,
+        city:this.signupForm.value.city,
+        country:this.signupForm.value.country,
+        state:this.signupForm.value.state,
+        zipcode:this.signupForm.value.zipcode,
+        telephone:this.signupForm.value.telephone,
+        email:this.signupForm.value.email,
+        pass:this.signupForm.value.pss,
 
-    alert('SUCCESS!! :-)')
+      };
+
+      console.log(params);
+      this.errors = false;
+      this.passMatch = true;
+      this.auth.signUp(params).subscribe(res=>{
+        console.log(res);
+        
+      })
+      console.log('SUCCESS!! :-)');
+    }
+  
+   
     
   }
 
