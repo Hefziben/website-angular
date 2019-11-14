@@ -33,13 +33,14 @@ import { SignupComponent } from './signup/signup.component';
 import { SignupModule } from './signup/signup.module';
 import { LoginModule } from './login/login.module';
 
+
 @NgModule({
   declarations: [
     AppComponent,
     SideComponent,
     NotFoundComponent,
     FullscreenDirective,
-    SidebarComponent
+    SidebarComponent,
   ],
   imports: [
     BrowserModule,

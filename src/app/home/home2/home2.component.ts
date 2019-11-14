@@ -46,13 +46,30 @@ export class Home2Component implements OnInit {
         this.getSubCat(this.id);
     }
     getSubCat(id) {
-            this._productService.getStaticSubCategory(id, this.currentPage)
-            .subscribe( (res: any) => {
-              console.log('sub cat res---- ', res);
+        const searchMatch = new RegExp( "[A-Za-z]").test(id);
+        console.log(searchMatch);
+        if (!searchMatch) {
+          console.log("no letters, regular serach");
+          this._productService
+            .getStaticSubCategory(id, this.currentPage)
+            .subscribe((res: any) => {
+              console.log("sub cat res---- ", res);
               this.subCategories = res.product_data;
-              console.log('subCategories---- ', this.subCategories);
+              console.log("subCategories---- ", this.subCategories);
               this.pagination(res.total_record);
             });
+        } else {
+          console.log("letters, search match");
+          this._productService.getProductByName(id).subscribe(data => {
+            this.subCategories = data["product"];
+            const records = this.subCategories.length;
+            console.log(this.subCategories);
+            console.log(records);
+            this.pagination(records);
+          });
+        }
+        
+           
       }
 
       getProduct(item) {

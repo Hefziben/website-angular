@@ -28,6 +28,7 @@ import { GridLogoComponent } from './component/grid-logo/grid-logo.component';
 import { LightboxComponent } from './component/lightbox/lightbox.component';
 import { BreadcumbComponent } from './component/breadcumb/breadcumb.component';
 import { RatingComponent } from './component/rating/rating.component';
+import { AutofocusDirective } from './directive/autofocus.directive';
 
 @NgModule({
   imports: [
@@ -49,7 +50,8 @@ import { RatingComponent } from './component/rating/rating.component';
     LightboxComponent,
     productFilterPipe,
     BreadcumbComponent,
-    RatingComponent
+    RatingComponent,
+    AutofocusDirective
   ],
   exports: [
     ProductComponent,

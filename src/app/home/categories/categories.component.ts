@@ -43,6 +43,8 @@ getProduct(item) {
     this.getSubCat(item.categories_id)
   } else {
     this.router.navigateByUrl('categories/' + item.categories_id);
+    console.log('here');
+    
   }
 }
 

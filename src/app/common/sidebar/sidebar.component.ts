@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { productService } from 'app/lib/service/product.service';
 import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-sidebar',
@@ -18,13 +19,13 @@ export class SidebarComponent implements OnInit {
   User: any;
   loggedIn: boolean;
   searchText;
-  constructor(public _producService: productService, private router: Router) { }
+  constructor(public _productService: productService, private router: Router, private changes:ChangeDetectorRef) { }
 
   ngOnInit() {
     //this.searchByName();
     this.getCategories();
     // this.getCartitemCount();
-    this._producService.currentData.subscribe( data => {
+    this._productService.currentData.subscribe( data => {
       if (data) {
         console.log('new data is ', data);
         this.itemNum = data;
@@ -36,7 +37,7 @@ export class SidebarComponent implements OnInit {
       }
     });
     // this.getUser();
-    this._producService.authData.subscribe( data => {
+    this._productService.authData.subscribe( data => {
       if (data) {
         console.log('user logged in ', data);
         this.loggedIn = data;
@@ -75,7 +76,7 @@ export class SidebarComponent implements OnInit {
   getCartitemCount() {
     let Items = JSON.parse(localStorage.getItem('cartItems'));
 
-    this.itemNum = this._producService.itemNum ? this._producService.itemNum : 0;
+    this.itemNum = this._productService.itemNum ? this._productService.itemNum : 0;
   }
 
   openNav() {
@@ -106,29 +107,24 @@ export class SidebarComponent implements OnInit {
 
   }
 searchByName(){
-  console.log(this.searchText);
-  const sub = '1065';
+  this.changes.detectChanges();
+  this.search = !this.search;
+  document.getElementById('searchBlock').style.width = '0%';
+  console.log(this.searchText);  
+  this.router.navigateByUrl('categories/' + this.searchText).then(()=>{
+    this.searchText = null;
+    console.log(this.searchText);
+        
+  });
   
-  // const name = this.searchText;
-  // this._producService.getCategory().subscribe(res =>{
-  //   console.log(res);
     
-  // })
-
-  this._producService.getSubCategory(sub).subscribe(res =>{
-    console.log(res);
-    
-  })
-  // this._producService.getProductByName(name).subscribe(data =>{
-  //   console.log(data);    
-  // })
 }
 
   getSubCat(item) {
     this.closeNav();
     this.router.navigateByUrl('subcategories/' + item.categories_id);
     // this.catName = item.categories_name;
-    // this._producService.getSubCategory(item.categories_id)
+    // this._productService.getSubCategory(item.categories_id)
     // .subscribe( (res: any) => {
     //   console.log(res);
     //   this.subCategories = res.category;
@@ -137,10 +133,10 @@ searchByName(){
   }
 
   getCategories() {
-    this._producService.getCategory()
+    this._productService.getCategory()
     .subscribe( (data: any) => {
       this.categories = data.category;
-      this._producService.catId = this.categories[0].categories_id;
+      this._productService.catId = this.categories[0].categories_id;
       console.log('cats are ', data);
       // console.log('cats are ', this.categories);
     });
