@@ -40,7 +40,7 @@ import { LoginModule } from './login/login.module';
     SideComponent,
     NotFoundComponent,
     FullscreenDirective,
-    SidebarComponent,
+    SidebarComponent
   ],
   imports: [
     BrowserModule,

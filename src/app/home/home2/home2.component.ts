@@ -26,6 +26,12 @@ export class Home2Component implements OnInit {
     pages = [];
     currentPage = 0;
     id: any;
+    pageOfItems: Array<any>;
+    maxPages;
+    initialPage;
+    pageSize;
+ 
+    
 
     constructor(
         private router: Router,
@@ -38,20 +44,24 @@ export class Home2Component implements OnInit {
             this.id = params.id;
             return this.getSubCat(params.id)
         });
+
+        
     }
 
+    onChangePage(pageOfItems: Array<any>) {
+        // update current page of items
+        this.pageOfItems = pageOfItems;
+    }
     changePage(num) {
         console.log('num is ', num);
         this.currentPage = num;
         this.getSubCat(this.id);
     }
     getSubCat(id) {
-        const alphaMatch = new RegExp( "[A-Za-z]").test(id);
-        const alphanumerSearch = new RegExp( "[A-Za-z0-9]").test(id);
-        const numericSearch = new RegExp( "[0-9]").test(id);
-        console.log(alphaMatch);
-        if (numericSearch) {
-          console.log("no letters, regular serach");
+        const numeric = new RegExp( "[0-9]").test(id);
+       const alphanumerSearch = new RegExp( "[A-Za-z0-9]").test(id);
+        if (numeric) {
+          console.log("no letters, regular search");
           this._productService
             .getStaticSubCategory(id, this.currentPage)
             .subscribe((res: any) => {
@@ -60,20 +70,16 @@ export class Home2Component implements OnInit {
               console.log("subCategories---- ", this.subCategories);
               this.pagination(res.total_record);
             });
-        } if(alphaMatch) {
-          console.log("letters, search match");
+        } if(alphanumerSearch) {
+          console.log("lalphanumeric, search match");
           this._productService.getProductByName(id).subscribe(data => {
             this.subCategories = data["product"];
             const records = this.subCategories.length;
             console.log(this.subCategories);
-            console.log(records);
+            console.log(this.subCategories);
             this.pagination(records);
           });
-        } if(alphanumerSearch){
-            console.log(id);            
-
-        }
-        
+        }       
            
       }
 

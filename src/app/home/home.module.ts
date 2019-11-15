@@ -25,6 +25,7 @@ import { ProductComponent } from './product/product.component';
 import { SpecialComponent } from './special/special.component';
 import { GuestCheckoutComponent } from './guest-checkout/guest-checkout.component';
 import { EditProductComponent } from './edit-product/edit-product.component';
+import { JwPaginationComponent } from 'jw-angular-pagination';
 // import { CartComponent } from './cart/cart.component';
 
 @NgModule({
@@ -44,7 +45,8 @@ import { EditProductComponent } from './edit-product/edit-product.component';
     Home2Component,
     HomeslideDirective,
     CategoriesComponent,
-    ProductComponent
+    ProductComponent,
+    JwPaginationComponent
   ],
   exports: [Home1Component, Home2Component]
 })
