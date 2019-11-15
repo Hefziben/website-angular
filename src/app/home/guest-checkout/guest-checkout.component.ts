@@ -1,4 +1,6 @@
 import { Component, OnInit, AfterViewChecked } from '@angular/core';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+
 
 import { of } from 'rxjs';
 import { PayPalConfig, PayPalEnvironment, PayPalIntegrationType } from 'ngx-paypal';
@@ -19,6 +21,7 @@ declare let Accept: any;
 })
 export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
   model: any = {};
+  
   shipping: any = {};
   card = { name: null, number: null, month: null, year: null, cvv: null };
   same = true;
@@ -30,18 +33,20 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
   state = 'Alberta';
   payPalConfig?: PayPalConfig;
   coupon: number = 0.00;
+  
   Countries = countries;
   tax: number = 0.00;
   ship_amt: number = 0.00;
   totalAmount: number = 0.00;
-  // production code working
+  cardProcessing:Boolean = false;
+  // // production code working
   apiLoginID = '9Nd3y7r76VF';//9Nd3y7r76VF
   clientKey = '7h3Xvgn97K3Vkf9u6gkGzcj8k23thba7K4n9537JUMMC4fgs25LqBsNWWBNSFXje';
   transactionKey = '53j562rZTM3kYrLu';//53j562rZTM3kYrLu
   apiUrl = 'https://api.authorize.net/xml/v1/request.api';
-  end
+  // ///end
 
-  // //testing code working
+  //testing code working
   // apiLoginID  = '3a4zQV8XRuCT';//9Nd3y7r76VF
   // clientKey = '8G5hYgVT92u5uv8m2M7byC93V7BX44jFq2DumfHaDn9JdPyQn5h4pa4FBTD5Dhxq';
   // apiUrl = 'https://apitest.authorize.net/xml/v1/request.api';
@@ -74,7 +79,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
               line2: this.model.address_line_1,
               city: this.model.city,
               country_code: this.model.countryCode,
-              postal_code: this.model.zipcode.toString(),
+              postal_code: this.model.zipcode,
               state: this.model.state,
               phone: this.model.phone
             }
@@ -103,7 +108,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
                   city: this.same ? this.model.city : this.shipping.city,
                   state: this.same ? this.model.state : this.shipping.state,
                   country_code: this.model.countryCode,
-                  postal_code: this.same ? this.model.zipcode.toString() : this.shipping.zipcode.toString()
+                  postal_code: this.same ? this.model.zipcode : this.shipping.zipcode
                 }
               }
             }
@@ -152,10 +157,11 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
 
   constructor(private router: Router,
     public _productService: productService,
-    private _http: HttpClient) { }
+    private _http: HttpClient,
+    ) { }
 
   ngOnInit() {
-   
+    this.model.coupon = "";
     this.getCartitems();
     this.getTotal();
     this.getUser();
@@ -201,7 +207,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
         // tslint:disable-next-line:max-line-length
         description: this.Items[i].plateText1 ? this.Items[i].plateText1 : '' + ' ' + this.Items[i].plateText2 ? + '& ' + this.Items[i].plateText2 : '',
         quantity: this.Items[i].itemQuantity,
-        price: this.Items[i].TotalPrice.toString(),
+        price: this.Items[i].TotalPrice,
         sku: this.Items[i].plateType,
         currency: 'USD'
       }
@@ -322,6 +328,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
   }
 
   checkout() {
+    //this.cardProcessing = true;
     //console.log('clicked!')
     // console.log(this.model)
     // this.addScript = true;
@@ -329,18 +336,23 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
     // console.log(this.model);
     if (!this.model.fname || !this.model.lname || !this.model.street_address || !this.model.city || !this.model.country || !this.model.state || !this.model.zipcode || !this.model.phone || !this.model.email) {
       this.check = true;
+      this.cardProcessing = false;
       alert('Some Billing Infomartions are empty!')
     } else {
-      if (this.same) { this.sendPaymentDataToAnet(); }
+      if (this.same) { this.sendPaymentDataToAnet();
+        this.cardProcessing = true;
+       }
     }
     // diffrent address
     if (this.same === false) {
       // tslint:disable-next-line:max-line-length
       if (!this.shipping.fname || !this.shipping.lname || !this.shipping.street_address || !this.shipping.city || !this.shipping.country || !this.shipping.state || !this.shipping.zipcode) {
         this.check = true;
+        this.cardProcessing = false;
         alert('Some Shipping Infomartions are empty!')
       } else {
         this.sendPaymentDataToAnet()
+        this.cardProcessing = true;
       }
     }
   }
@@ -410,6 +422,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
 
 
   sendPaymentDataToAnet() {
+    this.cardProcessing = true;
     //console.log("sendPaymentDataToAnet()");
     if (this.card.name && this.card.number && this.card.month && this.card.year) {
      // console.log('Auth.net ready!')
@@ -421,11 +434,11 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
 
 
       let cardData = {
-        cardNumber: this.card.number.toString(),
-        month: this.card.month.toString(),
-        year: this.card.year.toString(),
-        cardCode: this.card.cvv.toString(),
-        fullName: this.card.name.toString()
+        cardNumber: this.card.number,
+        month: this.card.month,
+        year: this.card.year,
+        cardCode: this.card.cvv,
+        fullName: this.card.name
       };
       
       let secureData = {
@@ -447,6 +460,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
          // console.log("responseHandler function called");
           if (response.messages.resultCode === "Error"){
              // stopLoading();
+             
              var i = 0;
              while (i < response.messages.message.length) {
               // console.log(
@@ -457,6 +471,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
               if (i == 0) {
                   var error = response.messages.message[i].text;
                   console.error("Error", error);
+                  this.cardProcessing = false;
               }	
               i = i + 1;
           }
@@ -488,7 +503,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
               address: this.model.street_address + ' ' + this.model.address_line_1,
               city: this.model.city,
               state: this.model.state,
-              zip: this.model.zipcode.toString(),
+              zip: this.model.zipcode,
               country: this.model.countryCode
             };
       
@@ -503,7 +518,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
                 address: this.shipping.street_address + ' ' + this.shipping.address_line_1,
                 city: this.shipping.city,
                 state: this.shipping.state,
-              zip: this.shipping.zipcode.toString(),
+              zip: this.shipping.zipcode,
                 country: this.model.countryCode
               }
             }
@@ -570,7 +585,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
                   line2: this.model.address_line_1,
                   city: this.model.city,
                   country_code: this.model.countryCode,
-                  postal_code: this.model.zipcode.toString(),
+                  postal_code: this.model.zipcode,
                   state: this.model.state,
                   phone: this.model.phone
                 }
@@ -602,7 +617,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
                       city: this.same ? this.model.city : this.shipping.city,
                       state: this.same ? this.model.state : this.shipping.state,
                       country_code: this.model.countryCode,
-                      postal_code: this.same ? this.model.zipcode.toString() : this.shipping.zipcode.toString()
+                      postal_code: this.same ? this.model.zipcode : this.shipping.zipcode
                     }
                   }
                  }
@@ -633,19 +648,23 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
         this.getCartitemCount();
        localStorage.lastPaymentShipping = JSON.stringify(data);
         this.verifying = false;
+        this.cardProcessing = false;
         this.router.navigateByUrl('success');
       } else {
         // console.log('Payment Failed');
+        
       }
     });
           
         } else {
+          this.cardProcessing = false;
           alert('Payment Failed');
           
           
         }
       },
       (error) => {
+        this.cardProcessing = false;
         //console.log(error);
         
       }
@@ -720,7 +739,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
             line2: this.model.address_line_1,
             city: this.model.city,
             country_code: this.model.countryCode,
-            postal_code: this.model.zipcode.toString(),
+            postal_code: this.model.zipcode,
             state: this.model.state,
             phone: this.model.phone
           }
@@ -758,7 +777,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
                 city: this.same ? this.model.city : this.shipping.city,
                 state: this.same ? this.model.state : this.shipping.state,
                 country_code: this.model.countryCode,
-                postal_code: this.same ? this.model.zipcode.toString() : this.shipping.zipcode.toString()
+                postal_code: this.same ? this.model.zipcode : this.shipping.zipcode
               }
             }
           }

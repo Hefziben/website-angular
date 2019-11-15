@@ -168,7 +168,7 @@
 
         <div class="form-group row">
             <div class="col-xs-11">
-                <input type="number" [(ngModel)]="model.zipcode" #ctrl="ngModel" class="form-control " id="exampleInputText" aria-describedby="textHelp" placeholder="Post/Zipcode">
+                <input type="text" [(ngModel)]="model.zipcode" #ctrl="ngModel" class="form-control " id="exampleInputText" aria-describedby="textHelp" placeholder="Post/Zipcode">
                 <small *ngIf="!model.zipcode&&check" id="emailHelp" class="form-text text-muted text-danger">this field is empty</small>
               </div>          
             <label for="inputEmail3" class="col-xs-1 col-form-label text-danger">*</label>
@@ -378,7 +378,7 @@
   
           <div class="form-group row">
               <div class="col-xs-11">
-                  <input type="number" [(ngModel)]="shipping.zipcode" #ctrl="ngModel" class="form-control " id="exampleInputText" placeholder="Post/Zipcode">
+                  <input type="text" [(ngModel)]="shipping.zipcode" #ctrl="ngModel" class="form-control " id="exampleInputText" placeholder="Post/Zipcode">
                   <small *ngIf="!shipping.zipcode&&check" id="emailHelp" class="form-text text-muted text-danger">this field is empty</small>
                 </div>          
               <label for="" class="col-xs-1 col-form-label text-danger">*</label>
@@ -542,16 +542,16 @@
                 <input type="text" [(ngModel)]="card.name" #ctrl="ngModel" class="form-control " placeholder="Cardholder Name">
               </div>
               <div class="col-xs-12">
-                <input type="number" [(ngModel)]="card.number" #ctrl="ngModel" class="form-control " placeholder="Card Number">
+                <input type="text" [(ngModel)]="card.number" #ctrl="ngModel" class="form-control " placeholder="Card Number">
               </div>
               <div class="col-xs-6">
-                <input type="number" [(ngModel)]="card.month" #ctrl="ngModel" class="form-control " placeholder="Expiry Month">
+                <input type="text" [(ngModel)]="card.month" #ctrl="ngModel" class="form-control " placeholder="Expiry Month">
               </div>
               <div class="col-xs-6">
-                <input type="number" [(ngModel)]="card.year" #ctrl="ngModel" class="form-control " placeholder="Expiry Year">
+                <input type="text" [(ngModel)]="card.year" #ctrl="ngModel" class="form-control " placeholder="Expiry Year">
               </div>
               <div class="col-sm-6 col-xs-6">
-                <input type="number" [(ngModel)]="card.cvv" #ctrl="ngModel" class="form-control " placeholder="CVV Number">         
+                <input type="text" [(ngModel)]="card.cvv" #ctrl="ngModel" class="form-control " placeholder="CVV Number">         
                 <input type="hidden" name="dataValue" id="dataValue" />
                 <input type="hidden" name="dataDescriptor" id="dataDescriptor" />   
               </div>
@@ -565,9 +565,14 @@
               </div>
             </div>
       </section>
-       
-        
-        <section>
+      <ng-container>
+        <div [hidden]="!cardProcessing" class="col-sm-4 text-center">
+            <img width="14%" src="/assets/images/loader.svg" alt="">
+                <h6>verifying...</h6>
+            </div>
+  </ng-container>
+      
+        <section [hidden]="cardProcessing">
             <div class="row">
                 <div class="col-xs-12">
                     <img src="assets/images/cvv_info.gif" alt="">
