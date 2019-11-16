@@ -1,6 +1,8 @@
-import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
+import { NgModule, OnInit } from '@angular/core';
+import { Routes, RouterModule,  } from '@angular/router';
 import { ThankyouComponent } from './thankyou.component';
+
+
 
 const routes: Routes = [
     {
@@ -13,4 +15,12 @@ const routes: Routes = [
     imports: [RouterModule.forChild(routes)],
     exports: [RouterModule]
 })
-export class ThankyouRoutingModule {}
+export class ThankyouRoutingModule  {
+
+    details;
+    data;
+    
+
+
+    
+}

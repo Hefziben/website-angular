@@ -1,7 +1,27 @@
 <div class="container"> <hr>
+  <div  style="background-color: lightgrey;font-weight: lighter" class="row text-left">
+    <h3 style="color: red;">Thank You,</h3>
+    <h4 style="font-weight: bolder; font-size: 30px;">Your oder has been placed</h4>
+    <h5 style="color: grey;">Your order number is {{this.order}}</h5>
+  </div>
+  <div  style="background-color: lightcoral;" style="display: flex; justify-content: space-around; flex-flow: row wrap;" class="billing">
+    <div style="max-width: 250px;">
+      <h5 style="font-weight: bolder;">DELIVERY ADDRESS</h5>
+      <h6>Name:{{customer.first_name}}</h6>
+      <h6>Address:{{address}}</h6>
+      <h6>Phone:{{shipping.phone}}</h6> 
+      <h6>Payment Method:{{payment_method}}</h6>
+    </div>
+    <div style="max-width: 250px;">
+      <h5 style="font-weight: bolder;">Billing Address</h5>
+      <h6>Name:{{customer.first_name}}</h6>
+      <h6>Address:{{billing_address}}</h6>
+      <h6>Phone:{{shipping.phone}}</h6> 
+      <h6>Email:{{customer.email}}</h6>     
+    </div>
+  </div>
   <div class="row text-center">
-    <h3>Thank You</h3>
-    <h6>Your oder was completed succesfully</h6>
     <a class="btn btn-secondary" routerLink="/"> back to Home</a>
   </div>
+  
 </div>

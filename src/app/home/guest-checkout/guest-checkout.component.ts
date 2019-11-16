@@ -4,7 +4,7 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 import { of } from 'rxjs';
 import { PayPalConfig, PayPalEnvironment, PayPalIntegrationType } from 'ngx-paypal';
-import { Router } from '@angular/router';
+import { Router, NavigationExtras } from '@angular/router';
 
 import { countries } from './country'
 import { productService } from 'app/lib/service/product.service';
@@ -33,7 +33,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
   state = 'Alberta';
   payPalConfig?: PayPalConfig;
   coupon: number = 0.00;
-  
+  orderDetails;
   Countries = countries;
   tax: number = 0.00;
   ship_amt: number = 0.00;
@@ -367,6 +367,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
       alert('Some Billing Infomartions are empty!')
     } else {
       if (this.same) { this.doPaypal = true; }
+      this.getTotalAmount();
     }
     // diffrent address
     if (this.same === false) {
@@ -376,6 +377,7 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
         alert('Some Shipping Infomartions are empty!')
       } else {
         this.doPaypal = true;
+         this.getTotalAmount();
       }
     }
   }
@@ -634,19 +636,20 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
             payer: orderData.payer,
             items: this.Items
           };
+          this.orderDetails = orderData;
           console.log(orderData);
-          localStorage.lastPayment = JSON.stringify(orderData.payment);
-        console.log(localStorage.lastPayment);
+         console.log(localStorage.lastPayment);
      // send to server
      this._productService.postOrderData(orderData)
     .subscribe((res: any) => {
       if (res.success == 1) {
         console.log(res);
-        localStorage.lastPayment = JSON.stringify(orderData.payment);
-        console.log(localStorage.lastPayment);
+       
+        localStorage.lastPayment = JSON.stringify(res);
         localStorage.cartItems = JSON.stringify([]);
+        localStorage.lastPaymentShipping = JSON.stringify(orderData);
         this.getCartitemCount();
-       localStorage.lastPaymentShipping = JSON.stringify(data);
+       
         this.verifying = false;
         this.cardProcessing = false;
         this.router.navigateByUrl('success');
@@ -794,9 +797,15 @@ export class GuestCheckoutComponent implements OnInit, AfterViewChecked {
           // this.paymentSuccess(payment)
           this.getCartitemCount();
          // console.log('success', saveData);
-          localStorage.lastPaymentShipping = JSON.stringify(data);
-          this.verifying = false;
-          this.router.navigateByUrl('success')
+         localStorage.lastPayment = JSON.stringify(res);
+         localStorage.cartItems = JSON.stringify([]);
+         localStorage.lastPaymentShipping = JSON.stringify(saveData);
+         this.getCartitemCount();
+        
+         this.verifying = false;
+         this.cardProcessing = false;
+         this.router.navigateByUrl('success')
+        
         } else {
           // console.log('Payment Failed');
         }
@@ -810,5 +819,9 @@ getCartItems(){
 console.log(cartDetails);
 
   
+}
+ // Select Category
+ gotoSucess(saveData){
+  this.router.navigate(['success']);
 }
 }

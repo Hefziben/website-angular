@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ThankyouRoutingModule } from './thankyou-routing.module';
 import { ThankyouComponent } from './thankyou.component';
 
+
 @NgModule({
   imports: [
     CommonModule,
